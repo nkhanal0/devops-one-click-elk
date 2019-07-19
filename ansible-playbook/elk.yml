@@ -1,0 +1,98 @@
+---
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+
+  tasks:
+    - name: Update Repository Cache
+      apt: update_cache=yes
+
+    - name: Install HTTPS APT transport (Dependency for Elasticsearch)
+      apt:
+        name: apt-transport-https
+        state: present
+
+    - name: Add apt-key for Elasticsearch
+      apt_key:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+
+    - name: Add ES Repository
+      apt_repository:
+        repo: 'deb https://artifacts.elastic.co/packages/7.x/apt stable main'
+        state: present
+        update_cache: true
+
+    - name: Run a script to install jdk8
+      script: ../scripts/jdk-install.sh
+
+    - name: Install Elasticsearch
+      package:
+        name: elasticsearch
+        state: "present"
+
+    - name: Configure Elasticsearch.
+      template:
+        src: elasticsearch.yml.j2
+        dest: /etc/elasticsearch/elasticsearch.yml
+        owner: root
+        group: elasticsearch
+        mode: 0660
+
+    - name: Force a restart for config changes.
+      meta: flush_handlers
+
+    - name: Start Elasticsearch
+      service:
+        name: elasticsearch
+        state: started
+        enabled: true
+
+    - name: Check if elasticsearch started properly
+      wait_for:
+        host: "127.0.0.1"
+        port: "9200"
+        delay: 3
+        timeout: 300
+
+    - name: Add Logstash repo.
+      apt_repository:
+        repo: 'deb https://artifacts.elastic.co/packages/6.x/apt stable main'
+        state: present
+        update_cache: true
+
+    - name: Install Logstash.
+      apt:
+        name: logstash
+        state: present
+
+    - name: Start Logstash.
+      service:
+        name: logstash
+        state: started
+        enabled: true
+
+    - name: Add Kibana Repository
+      apt_repository:
+        repo: 'deb https://artifacts.elastic.co/packages/6.x/apt stable main'
+        state: present
+        update_cache: true
+
+    - name: Install Kibana.
+      package:
+        name: "kibana"
+        state: "present"
+
+    - name: Copy Kibana configuration.
+      template:
+        src: kibana.yml.j2
+        dest: /etc/kibana/kibana.yml
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Ensure Kibana is started and enabled at boot.
+      service:
+        name: kibana
+        state: started
+        enabled: true

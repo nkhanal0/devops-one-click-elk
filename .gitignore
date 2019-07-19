@@ -1,0 +1,9 @@
+# Terraform
+**/.terraform/*
+terraform/out.terraform
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/.terraform.tfstate.lock.info
+packer/manifest.json
+aws/*.pem
+*.pem
