@@ -1,6 +1,6 @@
 # one-click-elk-using-packer-terraform-ansible-jenkins
 
-# This Readme is a Work In Progress 
+# This Readme is a Work In Progress
 
 ## Prerequisites
 * Install `packer` Locally.
@@ -10,9 +10,16 @@
 * Install `jq` Locally.
 * Run `aws configure`.
 
+## Generate Keypair
+
+* Modify the `aws/gen-keypair.sh` with the name of the Keypair you want to create.
+* Run `./gen-keypair.sh`.
+* You will see a `*.pem` generated based on the name you choose.
+* Use that Keypair for other steps.
+
 ## Packer(Jenkins)
 
-* Modify the `jenkins-ami.json` to suit your need.
+* Modify the `packer/jenkins-ami.json` to suit your need.
 * You need to open port 8080 in your firewall for Jenkins.
 * Once the EC2 instance is created, You will need to unlock Jenkins by grabbing a password from the EC2 instance: `sudo cat /var/lib/jenkins/secrets/initialAdminPassword`.
 
