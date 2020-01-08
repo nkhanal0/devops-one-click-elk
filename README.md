@@ -40,3 +40,11 @@
 
 # How to Run this?
 * Once you have the prerequisites and individual configuration (Packer, Ansible and Terraform) from above steps setup run `./main.sh`.
+
+# Caveats
+* It assumes that you have a default VPC setup.
+* After each run you have to cleanup the keys and the terraform.tfvars file as each run writes the pem file and the jenkins ami to that file.
+
+# Todo
+* Add output so that it's easier for users to go in to the url for Jenkins.
+* To destroy the instances and resources created, go to `terraform` and enter `terraform destroy`.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #Set Keypair Name
-KEYPAIR=AWS-Demo-Keypair
+KEYPAIR=AWS-Demo-Keypair-Niraj
 
 set -e
 
@@ -11,7 +11,7 @@ gen_keypair () {
   #Generate a new keypair
   set -x
   aws ec2 create-key-pair --key-name $KEYPAIR --query 'KeyMaterial' --output text > $KEYPAIR.pem
-  chmod 400 AWS-Demo-Keypair.pem
+  chmod 400 $KEYPAIR.pem
   set +x
 }
 
